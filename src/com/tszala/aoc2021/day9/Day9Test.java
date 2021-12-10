@@ -1,5 +1,6 @@
 package com.tszala.aoc2021.day9;
 
+import com.tszala.aoc2021.utils.FileOps;
 import com.tszala.aoc2021.utils.Point;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class Day9Test {
 
     private final List<String> lines = Arrays.asList("2199943210", "3987894921", "9856789892", "8767896789", "9899965678");
-    private final int[][] vents = Day9.initVents(lines);
+    private final int[][] vents = FileOps.initInts(lines);
 
     @Test
     void shouldSumLowPoints() {

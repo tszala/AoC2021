@@ -2,10 +2,12 @@ package com.tszala.aoc2021.day9;
 
 import com.tszala.aoc2021.utils.FileOps;
 import com.tszala.aoc2021.utils.Point;
-import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Day9 {
@@ -14,8 +16,7 @@ public class Day9 {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Day 9");
-        List<String> lines = FileOps.readAllLines("src/com/tszala/aoc2021/day9/input.txt");
-        int[][] vents = initVents(lines);
+        int[][] vents = FileOps.readInts("src/com/tszala/aoc2021/day9/input.txt");
 
         int sum = sumLowPoints(vents);
         System.out.printf("Sum of low points %d\n", sum);
@@ -34,14 +35,6 @@ public class Day9 {
     public static List<Set<Point>> findBasins(int[][] vents) {
         Set<Point> lowPoints = findLowPoints(vents);
         return lowPoints.stream().map(p -> countBasins(vents, p)).collect(Collectors.toList());
-    }
-
-    public static int[][] initVents(List<String> lines) {
-        int[][] vents = new int[lines.size()][];
-        for(int i = 0; i < lines.size(); i++) {
-            vents[i] = stringToIntArray(lines.get(i));
-        }
-        return vents;
     }
 
     public static int sumLowPoints(int[][] vents) {
@@ -66,7 +59,7 @@ public class Day9 {
         Set<Point> points = new HashSet<>();
         int basePoint = vents[point.right][point.left];
         countBasins(vents, point.right, point.left+1, basePoint, points);
-        countBasins(vents,point.right, point.left-1, basePoint, points);
+        countBasins(vents, point.right, point.left-1, basePoint, points);
         countBasins(vents,point.right + 1, point.left, basePoint,  points);
         countBasins(vents,point.right - 1, point.left, basePoint, points);
         points.add(point);
@@ -93,9 +86,5 @@ public class Day9 {
         boolean leftRiskIsHigher = x == 0 || vents[y][x-1] > vents[y][x];
         boolean rightRiskIsHigher = x == (vents[y].length - 1) || vents[y][x+1] > vents[y][x];
         return aboveRiskIsHigher && belowRiskIsHigher && leftRiskIsHigher && rightRiskIsHigher;
-    }
-
-    private static int[] stringToIntArray(String line) {
-        return line.chars().map(c->c-ZERO).toArray();
     }
 }
