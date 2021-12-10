@@ -5,6 +5,7 @@ import com.tszala.aoc2021.utils.FileOps;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Day10 {
 
@@ -48,18 +49,11 @@ public class Day10 {
     }
 
     public static Long findTotalScoreForMissingBrackets(char[][] instructions) {
-        List<Long> scores = new ArrayList<>();
-        for(char[] instruction : instructions) {
-            if(isCorrupted(instruction) == null) {
-                long totalScore = 0;
-                List<Bracket> missingClosingBrackets = findMissingBrackets(instruction);
-                for (Bracket missingClosingBracket : missingClosingBrackets) {
-                    totalScore = 5 * totalScore + missingClosingBracket.autocompleteScore;
-                }
-                scores.add(totalScore);
-            }
-        }
-        List<Long> sortedScores = scores.stream().sorted().collect(Collectors.toList());
+        List<Long> sortedScores = Stream.of(instructions).filter(i->isCorrupted(i) == null)
+                .map(i-> findMissingBrackets(i).stream()
+                        .map(b->b.autocompleteScore)
+                        .reduce(0L, (a,b) -> a * 5 + b))
+                .sorted().collect(Collectors.toList());
         return sortedScores.get(sortedScores.size()/2);
     }
 
@@ -86,7 +80,7 @@ public class Day10 {
             if(bracket.isOpen(currentChar)) {
                 brackets.push(currentChar);
             } else {
-                Character previous = brackets.pop();
+                char previous = brackets.pop();
                 if(!(bracket.accept(previous) && bracket.isOpen(previous))) {
                     return bracket;
                 }
@@ -102,7 +96,7 @@ public class Day10 {
                 Bracket.MUSTACHE,
                 Bracket.POINTING);
         for (char currentChar : line) {
-            Bracket bracket = findBracket((List<Bracket>) allBracket, currentChar);
+            Bracket bracket = findBracket(allBracket, currentChar);
             if(bracket.isOpen(currentChar)) {
                 brackets.push(currentChar);
             } else {
