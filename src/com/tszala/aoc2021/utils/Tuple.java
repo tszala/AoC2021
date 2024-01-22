@@ -11,6 +11,14 @@ public class Tuple<L,R> {
         right = r;
     }
 
+    public L getLeft() {
+        return left;
+    }
+
+    public R getRight() {
+        return right;
+    }
+
     @Override
     public String toString() {
         return format("<%s,%s>", left.toString(), right.toString());
